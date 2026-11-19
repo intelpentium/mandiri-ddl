@@ -1,22 +1,22 @@
 package com.example.testmandiri.ui.theme
 
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 
-private val MovieColors = darkColorScheme(
-    primary = Color(0xFFF4B979),
-    onPrimary = Color(0xFF352006),
-    background = Color(0xFF13151B),
-    onBackground = Color(0xFFF2EFEA),
-    surface = Color(0xFF13151B),
-    onSurface = Color(0xFFF2EFEA),
-    surfaceVariant = Color(0xFF272B35),
-    onSurfaceVariant = Color(0xFFC7C9D2),
-    surfaceContainer = Color(0xFF1D2029),
-    surfaceContainerHigh = Color(0xFF252934),
-    outlineVariant = Color(0xFF3B4050)
+private val MovieColors = lightColorScheme(
+    primary = Color(0xFF8A460F),
+    onPrimary = Color.White,
+    background = Color(0xFFFFFBF6),
+    onBackground = Color(0xFF241C16),
+    surface = Color(0xFFFFFBF6),
+    onSurface = Color(0xFF241C16),
+    surfaceVariant = Color(0xFFF0E3D8),
+    onSurfaceVariant = Color(0xFF594B40),
+    surfaceContainer = Color(0xFFF7EFE6),
+    surfaceContainerHigh = Color(0xFFF1E6DC),
+    outlineVariant = Color(0xFFD8C8B9)
 )
 
 @Composable

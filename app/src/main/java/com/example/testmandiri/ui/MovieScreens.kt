@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -35,9 +37,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.LoadState as PagingLoadState
+import androidx.paging.PagingData
 import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemKey
 import coil.compose.AsyncImage
 import com.example.testmandiri.data.Genre
@@ -46,7 +51,9 @@ import com.example.testmandiri.data.MovieDetails
 import com.example.testmandiri.data.Review
 import com.example.testmandiri.data.Video
 import com.example.testmandiri.data.tmdbErrorMessage
+import com.example.testmandiri.ui.theme.MovieGuideTheme
 import java.util.Locale
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 internal fun GenreScreen(
@@ -342,3 +349,76 @@ private fun PagingFooter(items: LazyPagingItems<*>, emptyMessage: String) {
 
 private fun ratingLabel(rating: Double, votes: Int): String =
     if (votes > 0) String.format(Locale.getDefault(), "%.1f / 10", rating) else "Not rated"
+
+private val previewMovie = Movie(
+    id = 1,
+    title = "The Last Signal",
+    releaseDate = "2025-08-15",
+    posterPath = null,
+    rating = 8.2,
+    voteCount = 240
+)
+
+@Preview(name = "Movie List", widthDp = 360, heightDp = 640)
+@Composable
+private fun MovieListPreview() {
+    val movies = remember {
+        MutableStateFlow(
+            PagingData.from(listOf(previewMovie, previewMovie.copy(id = 2, title = "Beyond the Horizon")))
+        )
+    }.collectAsLazyPagingItems()
+
+    MovieScreenPreview {
+        MovieListScreen(movies, rememberLazyListState(), openMovie = {})
+    }
+}
+
+@Preview(name = "Movie Detail and Reviews", widthDp = 360, heightDp = 740)
+@Composable
+private fun MovieDetailPreview() {
+    val reviews = remember {
+        MutableStateFlow(
+            PagingData.from(listOf(Review("1", "Sam", "The atmosphere stayed with me after the credits.")))
+        )
+    }.collectAsLazyPagingItems()
+
+    MovieScreenPreview {
+        MovieDetailScreen(
+            movie = previewMovie,
+            details = LoadState.Ready(
+                MovieDetails(
+                    title = previewMovie.title,
+                    overview = "A radio operator follows a mysterious signal to an abandoned research station.",
+                    runtime = 108,
+                    genres = listOf(Genre(878, "Science Fiction")),
+                    releaseDate = previewMovie.releaseDate,
+                    posterPath = previewMovie.posterPath,
+                    rating = previewMovie.rating,
+                    voteCount = previewMovie.voteCount,
+                    videos = null
+                )
+            ),
+            reviews = reviews,
+            favorite = false,
+            savingFavorite = false,
+            favoriteError = null,
+            setFavorite = {},
+            retryDetails = {}
+        )
+    }
+}
+
+@Preview(name = "Favorites", widthDp = 360, heightDp = 640)
+@Composable
+private fun FavoritesPreview() {
+    MovieScreenPreview {
+        FavoritesScreen(LoadState.Ready(listOf(previewMovie)), openMovie = {})
+    }
+}
+
+@Composable
+internal fun MovieScreenPreview(content: @Composable () -> Unit) {
+    MovieGuideTheme {
+        Surface(modifier = Modifier.fillMaxSize(), content = content)
+    }
+}

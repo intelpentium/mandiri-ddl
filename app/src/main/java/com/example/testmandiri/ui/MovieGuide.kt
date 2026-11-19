@@ -29,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.compose.collectAsLazyPagingItems
@@ -151,4 +152,16 @@ internal fun Message(message: String, retry: (() -> Unit)? = null) {
         )
         if (retry != null) TextButton(onClick = retry) { Text("Try again") }
     }
+}
+
+@Preview(name = "Loading", widthDp = 360, heightDp = 640)
+@Composable
+private fun LoadingScreenPreview() {
+    MovieScreenPreview { LoadingScreen() }
+}
+
+@Preview(name = "Error", widthDp = 360, heightDp = 640)
+@Composable
+private fun ErrorScreenPreview() {
+    MovieScreenPreview { ScreenMessage("Could not connect to TMDB.", retry = {}) }
 }
